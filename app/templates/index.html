@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Siga</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        #mapid{
+            height: 800px;
+            width: 1000px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="mapid"></div>
+
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+<script src="../../static/js/MovingMarker.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+
+<script>
+    // initialize the map on the "map" div with a given center and zoom
+    var map = new L.Map('mapid', {
+        zoom: 6,
+        minZoom: 3,
+    });
+
+    // create a new tile layer
+    var tileUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        layer = new L.TileLayer(tileUrl,
+            {
+                attribution: 'Maps © <a href=\"www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            });
+
+    // add the layer to the map
+    map.addLayer(layer);
+
+    var parisKievLL = [[-7.2428323,-35.9716049], [-7.2372077,-35.8694237]];
+//    var londonParisRomeBerlinBucarest = [[51.507222, -0.1275], [48.8567, 2.3508],
+//        [41.9, 12.5], [52.516667, 13.383333], [44.4166,26.1]];
+//    var londonBrusselFrankfurtAmsterdamLondon = [[51.507222, -0.1275], [50.85, 4.35],
+//        [50.116667, 8.683333], [52.366667, 4.9], [51.507222, -0.1275]];
+
+    map.fitBounds(parisKievLL);
+
+
+    var trajeto = [];
+    var totalDistance;
+    var totalTime;
+    var waypointIndices;
+    var instructions;
+    var coordinates;
+    var waypoints;
+    var marker1;
+
+    var a = L.Routing.control({
+        waypoints: [
+            L.latLng(-7.2428323,-35.9716049),
+            L.latLng(-7.2372077,-35.8694237)
+        ],
+        routeWhileDragging: true,
+        geocoder: L.Control.Geocoder.nominatim()
+    }).on('routesfound', function(e) {
+        var routes = e.routes;
+        console.log(routes);
+//        console.log(routes[0].summary.totalDistance);
+        coordinates = routes[0].coordinates;
+        totalDistance = routes[0].summary.totalDistance;
+        totalTime = routes[0].summary.totalTime;
+        waypointIndices = routes[0].waypointIndices;
+        waypoints = routes[0].waypoints;
+        instructions = routes[0].instructions;
+        coordinates.forEach(function (obj) {
+            trajeto.push([obj.lat, obj.lng]);
+        });
+    }).addTo(map);
+
+
+    setTimeout(function () {
+        console.log(trajeto);
+        var times = [];
+
+        for (var i=0; i<instructions.length-1;i++){
+            var numItens = instructions[i+1].index-instructions[i].index;
+            var timeStepTrajeto = instructions[i].time/numItens;
+            for (var j=0; j<numItens; j++){
+                times.push(timeStepTrajeto*1000);
+            }
+        }
+//        for(var i=1; i<trajeto.length-1; i++){
+//            marker1.moveTo(trajeto[i],1000);
+//        }
+//        trajeto.forEach(function (step) {
+//           marker1.addLatLng(step[0], step[1]);
+//        });
+
+        console.log('times', times);
+        marker1 = L.Marker.movingMarker(trajeto, times);
+        marker1.addTo(map);
+        marker1.start();
+        console.log(marker1.isRunning());
+//        marker1.once('click', function () {
+//            setTimeout(function() {
+//                marker1.bindPopup('<b>Cam1</b>').openPopup();
+//            }, 2000);
+//        });
+
+        marker1.bindPopup('<b>Cam1</b>', {closeOnClick: false});
+        marker1.openPopup();
+    }, 2000);
+
+
+</script>
+</body>
+</html>
