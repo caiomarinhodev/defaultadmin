@@ -1,0 +1,18 @@
+Empresas  (Avulso e Contrato)
+Concessionarias ( Aluguel, Venda, Compra)
+Banco (interface que empresta a juros à mercado, e libera carta de crédito com juros menor que à mercado).
+
+Calculo de uso_caminhao = (limite random - n* manutencoes passado)*km_rodado/500 -> 100% === 5000km_rodado. Nao usa apos 100%.
+
+Concessionaria compra a 0 a 75% do valor original.
+	       aluga a 0.5 a 2% do valor original.
+
+Custo total entrega = random_gasolina (100 a 1000) + taxas (0 a 500)
+
+
+Valor Total Entrega = Lucro (10 a 500% de custo total entrega) + custo_total
+
+Entrega .inicio e .fim é datae hora
+Entrega .origem_lat e .origem_lng e .origem
+
+Mapear Marcas, Modelos, Origens com (lat,lng), Destinos (lat,lng), Empresas Generator, Concessionarias Generator, Motoristas Generator, Entregas Generator
