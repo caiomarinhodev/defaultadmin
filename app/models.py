@@ -14,6 +14,18 @@ class TimeStamped(models.Model):
     published_at = models.DateTimeField(auto_now=True)
 
 
+class Endereco(TimeStamped):
+    class Meta:
+        verbose_name = u'Endereco'
+        verbose_name_plural = u'Endereco'
+
+    latitude = models.CharField(max_length=300, blank=True, null=True)
+    longitude = models.CharField(max_length=300, blank=True, null=True)
+    nome = models.CharField(max_length=300, blank=True, null=True)
+    cep = models.CharField(max_length=300, blank=True, null=True)
+    estado = models.CharField(max_length=300, blank=True, null=True)
+
+
 class Player(TimeStamped):
     class Meta:
         verbose_name = u'Jogador'
@@ -128,14 +140,13 @@ class Entrega(TimeStamped):
         verbose_name = u'Entrega'
         verbose_name_plural = u'Entregas'
 
-    destino = models.CharField(max_length=300, blank=True, null=True)
-    lat_destino = models.CharField(max_length=300, blank=True, null=True)
-    lng_destino = models.CharField(max_length=300, blank=True, null=True)
-    player = None
-    empresa = None
-    caminhao = None
+    destino = models.ForeignKey(Endereco, blank=True, null=True, on_delete=models.CASCADE)
+    origem = models.ForeignKey(Endereco, blank=True, null=True, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, blank=True, null=True, on_delete=models.CASCADE)
+    empresa = models.ForeignKey(Empresa, blank=True, null=True, on_delete=models.CASCADE)
+    caminhao = models.ForeignKey(Caminhao, blank=True, null=True, on_delete=models.CASCADE)
     custo_total = models.CharField(max_length=300, blank=True, null=True)
     gasolina_total = models.CharField(max_length=300, blank=True, null=True)
     taxas = models.CharField(max_length=300, blank=True, null=True)
-    inicio = models.CharField(max_length=300, blank=True, null=True)
-    fim = models.CharField(max_length=300, blank=True, null=True)
+    inicio_hora = models.CharField(max_length=300, blank=True, null=True)
+    fim_hora = models.CharField(max_length=300, blank=True, null=True)
