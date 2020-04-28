@@ -28,8 +28,22 @@ class Player(TimeStamped):
     def __str__(self):
         return u'%s ' % self.user.username
 
+    def add_credit(self, *args, **kwargs):
+        if 'credit' in kwargs:
+            self.money = "{:.2f}".format(float(self.money) + float(kwargs['credit']))
+            self.save(*args, **kwargs)
+
+    def add_debit(self, *args, **kwargs):
+        if 'debit' in kwargs:
+            self.money = "{:.2f}".format(float(self.money) - float(kwargs['debit']))
+            self.save(*args, **kwargs)
+
 
 class Concessionaria(Player):
+    class Meta:
+        verbose_name = u'Concessionaria'
+        verbose_name_plural = u'Concessionarias'
+
     marca = models.CharField(max_length=300, blank=True, null=True)
     taxa_de_compra = models.CharField(max_length=300, blank=True, null=True)
     taxa_aluguel = models.CharField(max_length=300, blank=True, null=True)
