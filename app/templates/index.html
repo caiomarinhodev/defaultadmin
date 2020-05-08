@@ -47,7 +47,10 @@
 
 
 <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
+<!--
 <script src="{% static 'node_modules/webrtc-adapter/out/adapter.js' %}"></script>
+
+-->
 <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
 
 <!-- custom layout for HTML5 audio/video elements -->
@@ -118,8 +121,7 @@
 
     connection.session = {
         audio: true,
-        video: true,
-        data: true
+        video: true
     };
 
     connection.sdpConstraints.mandatory = {
@@ -234,7 +236,7 @@
             video.setAttribute('playsinline', true);
         }
 
-        if (event.type === 'local') {
+        if (event.type === 'local') {ns#medi
             video.volume = 0;
             try {
                 video.setAttributeNode(document.createAttribute('muted'));
